@@ -35,29 +35,33 @@ let
         };
         vscode = {
           enable = true;
-          enableExtensionUpdateCheck = false;
-          enableUpdateCheck = false;
-          extensions = [
-            pkgs.vscode-extensions.esbenp.prettier-vscode
-            pkgs.vscode-extensions.ms-python.python
-            pkgs.vscode-extensions.redhat.vscode-xml
-            pkgs.vscode-extensions.redhat.vscode-yaml
-            pkgs.vscode-extensions.visualstudioexptteam.intellicode-api-usage-examples
-            pkgs.vscode-extensions.visualstudioexptteam.vscodeintellicode
-            pkgs.vscode-extensions.vscodevim.vim
-          ];
           mutableExtensionsDir = false;
-          userSettings = {
-            "[css]" = { "editor.defaultFormatter" = "esbenp.prettier-vscode"; };
-            "[html]" = { "editor.defaultFormatter" = "esbenp.prettier-vscode"; };
-            "[typescript]" = { "editor.defaultFormatter" = "esbenp.prettier-vscode"; };
-            "editor.minimap.enabled" = false;
-            "editor.tabSize" = 2;
-            "git.confirmSync" = false;
-            "git.enableCommitSigning" = true;
-            "redhat.telemetry.enabled" = false;
-            "update.mode" = "none";
-            "workbench.activityBar.location" = "hidden";
+          profiles = {
+            default = {
+              enableExtensionUpdateCheck = false;
+              enableUpdateCheck = false;
+              extensions = [
+                pkgs.vscode-extensions.esbenp.prettier-vscode
+                pkgs.vscode-extensions.ms-python.python
+                pkgs.vscode-extensions.redhat.vscode-xml
+                pkgs.vscode-extensions.redhat.vscode-yaml
+                pkgs.vscode-extensions.visualstudioexptteam.intellicode-api-usage-examples
+                pkgs.vscode-extensions.visualstudioexptteam.vscodeintellicode
+                pkgs.vscode-extensions.vscodevim.vim
+              ];
+              userSettings = {
+                "[css]" = { "editor.defaultFormatter" = "esbenp.prettier-vscode"; };
+                "[html]" = { "editor.defaultFormatter" = "esbenp.prettier-vscode"; };
+                "[typescript]" = { "editor.defaultFormatter" = "esbenp.prettier-vscode"; };
+                "editor.minimap.enabled" = false;
+                "editor.tabSize" = 2;
+                "git.confirmSync" = false;
+                "git.enableCommitSigning" = true;
+                "redhat.telemetry.enabled" = false;
+                "update.mode" = "none";
+                "workbench.activityBar.location" = "hidden";
+              };
+            };
           };
         };
         zsh = {
@@ -66,7 +70,9 @@ let
           };
           enable = true;
           enableCompletion = true;
-          initExtra = "gpgconf --launch gpg-agent";
+          initExtra = ''
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+          '';
           oh-my-zsh = {
             enable = true;
             plugins = [

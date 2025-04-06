@@ -22,7 +22,6 @@ let
           pkgs.gnupg
           pkgs.home-manager
           pkgs.htop
-          pkgs.mas
           pkgs.mkalias
           pkgs.neovim
           pkgs.nodejs_22
@@ -37,9 +36,13 @@ let
       fonts = {
         packages = [
           pkgs.font-awesome
+          pkgs.inter
         ];
       };
       homebrew = {
+        brews = [
+          "mas"
+        ];
         casks = [
           "aldente"
           "brave-browser"
@@ -57,9 +60,7 @@ let
           "visual-studio-code"
         ];
         enable = true;
-        global = {
-          autoUpdate = false;
-        };
+
         masApps = {
           Bitwarden = 1352778147;
           CopyClip = 595191960;
@@ -67,6 +68,8 @@ let
           "Hidden Bar" = 1452453066;
           NordVPN = 905953485;
           WhatsApp = 310633997;
+          "Windows App" = 1295203466;
+          "Wipr 2" = 1662217862;
         };
         onActivation = {
           autoUpdate = true;
@@ -91,12 +94,11 @@ let
       };
       security = {
         pam = {
-          enableSudoTouchIdAuth = true;
-        };
-      };
-      services = {
-        nix-daemon = {
-          enable = true;
+          services = {
+            sudo_local = {
+              touchIdAuth = true;
+            };
+          };
         };
       };
       system = {

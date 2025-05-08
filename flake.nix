@@ -7,7 +7,8 @@
     nix-darwin.url = "flake:nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = inputs:
+  outputs =
+    inputs:
     let
       flakeContext = {
         inherit inputs;

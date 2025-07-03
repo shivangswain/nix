@@ -42,10 +42,13 @@ let
                 enableExtensionUpdateCheck = true;
                 enableUpdateCheck = true;
                 extensions = [
+                  pkgs.vscode-extensions.astro-build.astro-vscode
                   pkgs.vscode-extensions.bradlc.vscode-tailwindcss
+                  pkgs.vscode-extensions.eamodio.gitlens
                   pkgs.vscode-extensions.esbenp.prettier-vscode
                   pkgs.vscode-extensions.github.copilot
                   pkgs.vscode-extensions.github.copilot-chat
+                  pkgs.vscode-extensions.github.github-vscode-theme
                   pkgs.vscode-extensions.jnoortheen.nix-ide
                   pkgs.vscode-extensions.ms-python.python
                   pkgs.vscode-extensions.redhat.vscode-xml
@@ -53,25 +56,27 @@ let
                   pkgs.vscode-extensions.visualstudioexptteam.intellicode-api-usage-examples
                   pkgs.vscode-extensions.visualstudioexptteam.vscodeintellicode
                   pkgs.vscode-extensions.vscodevim.vim
+                  pkgs.vscode-extensions.wix.vscode-import-cost
                 ];
                 userSettings = {
-                  "[css]" = {
-                    "editor.defaultFormatter" = "esbenp.prettier-vscode";
-                  };
-                  "[html]" = {
-                    "editor.defaultFormatter" = "esbenp.prettier-vscode";
-                  };
-                  "[typescript]" = {
-                    "editor.defaultFormatter" = "esbenp.prettier-vscode";
+                  "[python]" = {
+                    "editor.codeActionsOnSave" = {
+                      "source.organizeImports" = "explicit";
+                    };
                   };
                   "chat.agent.enabled" = true;
-                  "editor.minimap.enabled" = false;
+                  "editor.cursorSmoothCaretAnimation" = "on";
+                  "editor.defaultFormatter" = "esbenp.prettier-vscode";
+                  "editor.formatOnSave" = true;
                   "editor.tabSize" = 2;
+                  "editor.wordWrap" = "on";
+                  "git.autofetch" = true;
                   "git.confirmSync" = false;
                   "git.enableCommitSigning" = true;
                   "redhat.telemetry.enabled" = false;
                   "update.mode" = "none";
                   "workbench.activityBar.location" = "hidden";
+                  "workbench.colorTheme" = "GitHub Dark Default";
                 };
               };
             };
@@ -83,6 +88,7 @@ let
             enable = true;
             enableCompletion = true;
             initContent = ''
+                  DISABLE_AUTO_TITLE = "true"
               	  if [[ $(uname -m) == 'arm64' ]]; then
               	  	eval "$(/opt/homebrew/bin/brew shellenv)"
               	  fi

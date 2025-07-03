@@ -47,6 +47,8 @@ let
           packages = [
             pkgs.font-awesome
             pkgs.inter
+            pkgs.lexend
+            pkgs.nerd-fonts.code-new-roman
             pkgs.source-sans
           ];
         };
@@ -61,15 +63,15 @@ let
             "calibre"
             "citrix-workspace"
             "discord"
-            "ghostty"
             "idrive"
             "iina"
             "microsoft-excel"
             "microsoft-powerpoint"
             "microsoft-word"
             "nvidia-geforce-now"
+            "obsidian"
+            "onyx"
             "qbittorrent"
-            "raycast"
             "rectangle"
             "shottr"
             "visual-studio-code"
@@ -77,7 +79,6 @@ let
           enable = true;
           masApps = {
             Bitwarden = 1352778147;
-            CopyClip = 595191960;
             "Hand Mirror" = 1502839586;
             "Hidden Bar" = 1452453066;
             NordVPN = 905953485;
@@ -136,17 +137,17 @@ let
                 "/System/Applications/Messages.app"
                 "/System/Applications/Mail.app"
                 "/System/Applications/Music.app"
-                "/Applications/Ghostty.app"
+                "/System/Applications/Utilities/Terminal.app"
                 "/Applications/WhatsApp.app"
                 "/System/Applications/iPhone\ Mirroring.app"
               ];
               persistent-others = [
                 "/Users/shivangswain/Downloads"
-                "/Users/shivangswain/Library/Mobile Documents/com\~apple\~CloudDocs/Downloads"
               ];
               show-recents = false;
             };
           };
+          primaryUser = "shivangswain";
           stateVersion = 5;
         };
         users = {

@@ -22,7 +22,9 @@ let
         };
         environment = {
           systemPackages = [
+            pkgs.android-tools
             pkgs.aria2
+            pkgs.container
             pkgs.fd
             pkgs.ffmpeg
             pkgs.nixfmt-rfc-style
@@ -33,9 +35,9 @@ let
             pkgs.htop
             pkgs.mkalias
             pkgs.neovim
-            pkgs.nodejs
+            pkgs.nodejs_24
             pkgs.oh-my-posh
-            pkgs.python3
+            pkgs.uv
             pkgs.zoxide
             pkgs.zsh
             pkgs.zsh-autocomplete
@@ -60,9 +62,11 @@ let
             "adobe-digital-editions"
             "aldente"
             "brave-browser"
+            "burp-suite"
             "calibre"
             "citrix-workspace"
             "discord"
+            "gog-galaxy"
             "idrive"
             "iina"
             "microsoft-excel"
@@ -82,6 +86,8 @@ let
             "Hand Mirror" = 1502839586;
             "Hidden Bar" = 1452453066;
             NordVPN = 905953485;
+            Panels = 1236567663;
+            SponsorBlock = 1573461917;
             WhatsApp = 310633997;
             "Windows App" = 1295203466;
             "Wipr 2" = 1662217862;
@@ -134,18 +140,36 @@ let
               orientation = "left";
               persistent-apps = [
                 "/System/Cryptexes/App/System/Applications/Safari.app"
-                "/System/Applications/Messages.app"
                 "/System/Applications/Mail.app"
                 "/System/Applications/Music.app"
                 "/System/Applications/Utilities/Terminal.app"
                 "/Applications/WhatsApp.app"
-                "/System/Applications/iPhone\ Mirroring.app"
               ];
               persistent-others = [
                 "/Users/shivangswain/Downloads"
               ];
               show-recents = false;
             };
+            finder = {
+              FXRemoveOldTrashItems = true;
+              NewWindowTarget = "Home";
+              ShowPathbar = true;
+            };
+            menuExtraClock = {
+              FlashDateSeparators = true;
+              ShowDate = 1;
+              ShowDayOfWeek = true;
+            };
+            NSGlobalDomain = {
+              AppleInterfaceStyle = "Dark";
+            };
+            SoftwareUpdate = {
+              AutomaticallyInstallMacOSUpdates = true;
+            };
+          };
+          keyboard = {
+            enableKeyMapping = true;
+            remapCapsLockToEscape = true;
           };
           primaryUser = "shivangswain";
           stateVersion = 5;

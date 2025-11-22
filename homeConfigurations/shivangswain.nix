@@ -21,8 +21,12 @@ let
               key = "826FF286FEC7417A";
               signByDefault = true;
             };
-            userEmail = "me@shivangswain.com";
-            userName = "shivangswain";
+            settings = {
+              user = {
+                email = "me@shivangswain.com";
+                name = "shivangswain";
+              };
+            };
           };
           gpg = {
             enable = true;
@@ -35,12 +39,15 @@ let
               expandtab = true
             '';
           };
+          uv = {
+            enable = true;
+          };
           vscode = {
             enable = true;
             profiles = {
               default = {
-                enableExtensionUpdateCheck = true;
-                enableUpdateCheck = true;
+                enableExtensionUpdateCheck = false;
+                enableUpdateCheck = false;
                 extensions = [
                   pkgs.vscode-extensions.astro-build.astro-vscode
                   pkgs.vscode-extensions.bradlc.vscode-tailwindcss
@@ -50,15 +57,18 @@ let
                   pkgs.vscode-extensions.github.copilot-chat
                   pkgs.vscode-extensions.github.github-vscode-theme
                   pkgs.vscode-extensions.jnoortheen.nix-ide
+                  pkgs.vscode-extensions.ms-python.debugpy
+                  pkgs.vscode-extensions.ms-python.isort
                   pkgs.vscode-extensions.ms-python.python
                   pkgs.vscode-extensions.redhat.vscode-xml
                   pkgs.vscode-extensions.redhat.vscode-yaml
-                  pkgs.vscode-extensions.visualstudioexptteam.intellicode-api-usage-examples
-                  pkgs.vscode-extensions.visualstudioexptteam.vscodeintellicode
                   pkgs.vscode-extensions.vscodevim.vim
                   pkgs.vscode-extensions.wix.vscode-import-cost
                 ];
                 userSettings = {
+                  "[nix]" = {
+                    "editor.defaultFormatter" = "jnoortheen.nix-ide";
+                  };
                   "[python]" = {
                     "editor.codeActionsOnSave" = {
                       "source.organizeImports" = "explicit";
@@ -73,7 +83,6 @@ let
                   "git.autofetch" = true;
                   "git.confirmSync" = false;
                   "git.enableCommitSigning" = true;
-                  "redhat.telemetry.enabled" = false;
                   "update.mode" = "none";
                   "workbench.activityBar.location" = "hidden";
                   "workbench.colorTheme" = "GitHub Dark Default";
@@ -88,11 +97,14 @@ let
             enable = true;
             enableCompletion = true;
             initContent = ''
-                  DISABLE_AUTO_TITLE = "true"
               	  if [[ $(uname -m) == 'arm64' ]]; then
               	  	eval "$(/opt/homebrew/bin/brew shellenv)"
               	  fi
-              	  '';
+                  DISABLE_AUTO_TITLE='true'
+              	  PROMPT='%(?.%(!.#.>).%F{9}%(!.#.>)%f) '
+                  RPROMPT='%F{8}%2~/%f %D{%L:%M %p}'
+                  ZLE_RPROMPT_INDENT=0
+            '';
             oh-my-zsh = {
               enable = true;
               plugins = [
@@ -100,9 +112,6 @@ let
                 "fzf"
                 "zoxide"
               ];
-            };
-            sessionVariables = {
-              SSH_AUTH_SOCK = "$(gpgconf --list-dirs agent-ssh-socket)";
             };
             syntaxHighlighting = {
               enable = true;

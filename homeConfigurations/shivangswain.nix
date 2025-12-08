@@ -1,5 +1,9 @@
+# User-level configuration using home-manager
+# Can be used standalone: home-manager switch --flake ~/.config/nix#shivangswain
+# Or integrated with nix-darwin via the nixosModule export
 { inputs, ... }@flakeContext:
 let
+  # Home-manager module defining user configuration
   homeModule =
     {
       config,
@@ -9,123 +13,168 @@ let
     }:
     {
       config = {
+        # Basic home-manager settings
         home = {
-          homeDirectory = /Users/shivangswain;
-          stateVersion = "25.05";
+          homeDirectory = "/Users/shivangswain";
+          stateVersion = "25.05"; # Do not change after initial setup
           username = "shivangswain";
         };
+
         programs = {
+          # Git configuration with GPG signing
           git = {
             enable = true;
-            signing = {
-              key = "826FF286FEC7417A";
-              signByDefault = true;
-            };
             settings = {
               user = {
                 email = "me@shivangswain.com";
                 name = "shivangswain";
               };
             };
+            signing = {
+              key = "826FF286FEC7417A";
+              signByDefault = true;
+            };
           };
-          gpg = {
-            enable = true;
-          };
+
+          # GPG for encryption and signing
+          gpg.enable = true;
+
+          # Neovim as default editor
           neovim = {
-            defaultEditor = true;
             enable = true;
+            defaultEditor = true;
             extraLuaConfig = ''
-              softtabstop = 2
-              expandtab = true
+              -- Use 2 spaces for indentation
+              vim.opt.softtabstop = 2
+              vim.opt.expandtab = true
             '';
           };
-          uv = {
-            enable = true;
-          };
+
+          # Python package manager
+          uv.enable = true;
+
+          # VS Code configuration (managed declaratively)
           vscode = {
             enable = true;
-            profiles = {
-              default = {
-                enableExtensionUpdateCheck = false;
-                enableUpdateCheck = false;
-                extensions = [
-                  pkgs.vscode-extensions.astro-build.astro-vscode
-                  pkgs.vscode-extensions.bradlc.vscode-tailwindcss
-                  pkgs.vscode-extensions.eamodio.gitlens
-                  pkgs.vscode-extensions.esbenp.prettier-vscode
-                  pkgs.vscode-extensions.github.copilot
-                  pkgs.vscode-extensions.github.copilot-chat
-                  pkgs.vscode-extensions.github.github-vscode-theme
-                  pkgs.vscode-extensions.jnoortheen.nix-ide
-                  pkgs.vscode-extensions.ms-python.debugpy
-                  pkgs.vscode-extensions.ms-python.isort
-                  pkgs.vscode-extensions.ms-python.python
-                  pkgs.vscode-extensions.redhat.vscode-xml
-                  pkgs.vscode-extensions.redhat.vscode-yaml
-                  pkgs.vscode-extensions.vscodevim.vim
-                  pkgs.vscode-extensions.wix.vscode-import-cost
-                ];
-                userSettings = {
-                  "[nix]" = {
-                    "editor.defaultFormatter" = "jnoortheen.nix-ide";
-                  };
-                  "[python]" = {
-                    "editor.codeActionsOnSave" = {
-                      "source.organizeImports" = "explicit";
-                    };
-                  };
-                  "chat.agent.enabled" = true;
-                  "editor.cursorSmoothCaretAnimation" = "on";
-                  "editor.defaultFormatter" = "esbenp.prettier-vscode";
-                  "editor.formatOnSave" = true;
-                  "editor.tabSize" = 2;
-                  "editor.wordWrap" = "on";
-                  "git.autofetch" = true;
-                  "git.confirmSync" = false;
-                  "git.enableCommitSigning" = true;
-                  "update.mode" = "none";
-                  "workbench.activityBar.location" = "hidden";
-                  "workbench.colorTheme" = "GitHub Dark Default";
-                };
+            profiles.default = {
+              enableExtensionUpdateCheck = false;
+              enableUpdateCheck = false;
+
+              extensions = with pkgs.vscode-extensions; [
+                # Web development
+                astro-build.astro-vscode
+                bradlc.vscode-tailwindcss
+                esbenp.prettier-vscode
+                wix.vscode-import-cost
+
+                # Git integration
+                eamodio.gitlens
+
+                # AI assistance
+                github.copilot
+                github.copilot-chat
+
+                # Theme
+                github.github-vscode-theme
+
+                # Markdown
+                bierner.github-markdown-preview
+
+                # Nix support
+                jnoortheen.nix-ide
+
+                # Python development
+                ms-python.debugpy
+                ms-python.isort
+                ms-python.python
+
+                # Data formats
+                redhat.vscode-xml
+                redhat.vscode-yaml
+
+                # Vim keybindings
+                vscodevim.vim
+              ];
+
+              userSettings = {
+                # Nix formatting
+                "[nix]"."editor.defaultFormatter" = "jnoortheen.nix-ide";
+
+                # Python import organization
+                "[python]"."editor.codeActionsOnSave"."source.organizeImports" = "explicit";
+
+                # AI features
+                "chat.agent.enabled" = true;
+
+                # Editor behavior
+                "editor.cursorSmoothCaretAnimation" = "on";
+                "editor.defaultFormatter" = "esbenp.prettier-vscode";
+                "editor.formatOnSave" = true;
+                "editor.tabSize" = 2;
+                "editor.wordWrap" = "on";
+
+                # Git settings
+                "git.autofetch" = true;
+                "git.confirmSync" = false;
+                "git.enableCommitSigning" = true;
+
+                # Disable VS Code auto-updates (managed by Nix)
+                "update.mode" = "none";
+
+                # UI customization
+                "workbench.activityBar.location" = "hidden";
+                "workbench.colorTheme" = "GitHub Dark Default";
               };
             };
           };
+
+          # Zsh shell configuration
           zsh = {
-            autosuggestion = {
-              enable = true;
-            };
             enable = true;
             enableCompletion = true;
+
+            autosuggestion.enable = true;
+            syntaxHighlighting.enable = true;
+
+            # Shell initialization script
             initContent = ''
-              	  if [[ $(uname -m) == 'arm64' ]]; then
-              	  	eval "$(/opt/homebrew/bin/brew shellenv)"
-              	  fi
-                  DISABLE_AUTO_TITLE='true'
-              	  PROMPT='%(?.%(!.#.>).%F{9}%(!.#.>)%f) '
-                  RPROMPT='%F{8}%2~/%f %D{%L:%M %p}'
-                  ZLE_RPROMPT_INDENT=0
+              # Initialize Homebrew on Apple Silicon
+              if [[ $(uname -m) == 'arm64' ]]; then
+                eval "$(/opt/homebrew/bin/brew shellenv)"
+              fi
+
+              # Disable automatic terminal title updates
+              DISABLE_AUTO_TITLE='true'
+
+              # Minimal prompt: '>' or red '>' on error, '#' for root
+              PROMPT='%(?.%(!.#.>).%F{9}%(!.#.>)%f) '
+
+              # Right prompt: directory and time
+              RPROMPT='%F{8}%2~/%f %D{%L:%M %p}'
+              ZLE_RPROMPT_INDENT=0
             '';
+
+            # Oh My Zsh framework
             oh-my-zsh = {
               enable = true;
               plugins = [
-                "cp"
-                "fzf"
-                "zoxide"
+                "cp" # Progress bar for cp
+                "fzf" # Fuzzy finder integration
+                "zoxide" # Smart directory navigation
               ];
-            };
-            syntaxHighlighting = {
-              enable = true;
             };
           };
         };
+
+        # Background services
         services = {
+          # GPG agent for key management and SSH authentication
           gpg-agent = {
             enable = true;
             enableSshSupport = true;
             enableZshIntegration = true;
-            pinentry = {
-              package = pkgs.pinentry_mac;
-            };
+            pinentry.package = pkgs.pinentry_mac;
+            # SSH key keygrips to expose via GPG agent
             sshKeys = [
               "D3F75A53AAFBFEA33FF8E2F4A5927B868B1C8FBA"
             ];
@@ -133,20 +182,19 @@ let
         };
       };
     };
+
+  # Module wrapper for integration with nix-darwin
   nixosModule =
     { ... }:
     {
       home-manager.users.shivangswain = homeModule;
     };
 in
-(
-  (inputs.home-manager.lib.homeManagerConfiguration {
-    modules = [
-      homeModule
-    ];
-    pkgs = inputs.nixpkgs.legacyPackages.aarch64-darwin;
-  })
-  // {
-    inherit nixosModule;
-  }
-)
+# Export both standalone configuration and nix-darwin integration module
+(inputs.home-manager.lib.homeManagerConfiguration {
+  modules = [ homeModule ];
+  pkgs = inputs.nixpkgs.legacyPackages.aarch64-darwin;
+})
+// {
+  inherit nixosModule;
+}

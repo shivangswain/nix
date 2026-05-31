@@ -1,6 +1,6 @@
 # macOS system configuration using nix-darwin
 # Apply with: darwin-rebuild switch --flake ~/.config/nix#macos
-{ inputs, ... }@flakeContext:
+{ inputs, ... }:
 let
   darwinModule =
     {
@@ -31,6 +31,8 @@ let
         environment.systemPackages = with pkgs; [
           android-tools # ADB and fastboot
           aria2 # Download utility
+          cargo # Rust package manager
+          claude-code # Claude code
           fd # Fast find alternative
           ffmpeg # Media processing
           fzf # Fuzzy finder
@@ -40,12 +42,15 @@ let
           htop # Process viewer
           mkalias # Create macOS aliases from Nix store
           neovim # Text editor
-          nixfmt-rfc-style # Nix formatter (RFC style)
+          nixd # Nix language server
+          nixfmt # Nix formatter
           nodejs_24 # Node.js runtime
           oh-my-posh # Prompt theme engine
+          rustc # Rust compiler
+          typescript # TypeScript compiler
           uv # Fast Python package manager
           zoxide # Smart cd command
-          zsh # Shell
+          zsh # Z shell
           zsh-autocomplete # Real-time autocompletion
           zsh-autosuggestions # Fish-like suggestions
           zsh-syntax-highlighting # Syntax highlighting
@@ -55,9 +60,7 @@ let
         fonts.packages = with pkgs; [
           font-awesome
           inter
-          lexend
-          nerd-fonts.code-new-roman
-          source-sans
+          nerd-fonts.lilex
         ];
 
         # Homebrew configuration for packages not in nixpkgs
@@ -72,25 +75,24 @@ let
           # GUI applications installed via Homebrew Cask
           casks = [
             "adobe-digital-editions"
-            "aldente"
-            "brave-browser"
-            "burp-suite"
+            "antigravity"
             "calibre"
             "citrix-workspace"
+            "claude"
             "discord"
-            "gog-galaxy"
-            "idrive"
+            "helium-browser"
             "iina"
-            "microsoft-excel"
-            "microsoft-powerpoint"
-            "microsoft-word"
             "nvidia-geforce-now"
             "obsidian"
             "onyx"
             "qbittorrent"
-            "rectangle"
+            "sanesidebuttons"
+            "scroll-reverser"
             "shottr"
+            "utm"
             "visual-studio-code"
+            "zen"
+            "zoom"
           ];
 
           # Always upgrade casks, even those with built-in auto-update mechanisms
@@ -102,11 +104,10 @@ let
             "Hand Mirror" = 1502839586;
             "Hidden Bar" = 1452453066;
             "NordVPN" = 905953485;
-            "Panels" = 1236567663;
             "SponsorBlock" = 1573461917;
+            "uBlock Origin Lite" = 6745342698;
             "WhatsApp" = 310633997;
             "Windows App" = 1295203466;
-            "Wipr 2" = 1662217862;
           };
 
           # Homebrew behavior on system activation
@@ -160,7 +161,9 @@ let
                 "/System/Applications/Mail.app"
                 "/System/Applications/Music.app"
                 "/System/Applications/Utilities/Terminal.app"
+                "/Applications/Visual Studio Code.app"
                 "/Applications/WhatsApp.app"
+                "/Applications/Claude.app"
               ];
               persistent-others = [
                 "/Users/shivangswain/Downloads"
@@ -177,7 +180,7 @@ let
 
             # Menu bar clock settings
             menuExtraClock = {
-              FlashDateSeparators = true;
+              FlashDateSeparators = false;
               ShowDate = 1;
               ShowDayOfWeek = true;
             };

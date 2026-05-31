@@ -3,7 +3,7 @@
 
   inputs = {
     # Main nixpkgs repository (unstable channel for latest packages)
-    nixpkgs.url = "flake:nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "flake:nixpkgs/nixpkgs-26.05-darwin";
 
     # nix-darwin for macOS system configuration
     nix-darwin = {
@@ -13,7 +13,7 @@
 
     # home-manager for user-level configuration
     home-manager = {
-      url = "flake:home-manager";
+      url = "flake:home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

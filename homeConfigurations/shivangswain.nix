@@ -1,7 +1,7 @@
 # User-level configuration using home-manager
 # Can be used standalone: home-manager switch --flake ~/.config/nix#shivangswain
 # Or integrated with nix-darwin via the nixosModule export
-{ inputs, ... }@flakeContext:
+{ inputs, ... }:
 let
   # Home-manager module defining user configuration
   homeModule =
@@ -16,7 +16,7 @@ let
         # Basic home-manager settings
         home = {
           homeDirectory = "/Users/shivangswain";
-          stateVersion = "25.05"; # Do not change after initial setup
+          stateVersion = "26.05"; # Do not change after initial setup
           username = "shivangswain";
         };
 
@@ -43,87 +43,64 @@ let
           neovim = {
             enable = true;
             defaultEditor = true;
-            extraLuaConfig = ''
+            initLua = ''
               -- Use 2 spaces for indentation
               vim.opt.softtabstop = 2
               vim.opt.expandtab = true
             '';
           };
 
+          # Node package manager
+          npm.enable = true;
+
           # Python package manager
           uv.enable = true;
 
-          # VS Code configuration (managed declaratively)
+          # VSCode
           vscode = {
             enable = true;
+
+            # Nix-managed extensions (immutable, mirrors old Zed approach)
+            # mutableExtensionsDir = false;
+
             profiles.default = {
+              # Disable update/extension checks (Nix handles this)
               enableExtensionUpdateCheck = false;
               enableUpdateCheck = false;
 
+              # Extensions (VSCode marketplace equivalents of Zed extensions)
               extensions = with pkgs.vscode-extensions; [
-                # Web development
-                astro-build.astro-vscode
-                bradlc.vscode-tailwindcss
-                esbenp.prettier-vscode
-                wix.vscode-import-cost
-
-                # Git integration
-                eamodio.gitlens
-
-                # AI assistance
-                github.copilot
-                github.copilot-chat
-
-                # Theme
-                github.github-vscode-theme
-
-                # Markdown
-                bierner.github-markdown-preview
-
-                # Nix support
-                jnoortheen.nix-ide
-
-                # Python development
-                ms-python.debugpy
-                ms-python.isort
-                ms-python.python
-
-                # Data formats
-                redhat.vscode-xml
-                redhat.vscode-yaml
-
-                # Vim keybindings
-                vscodevim.vim
+                anthropic.claude-code # claude-code
+                bradlc.vscode-tailwindcss # tailwindcss
+                # elijah-potter.harper # harper (grammar checker)
+                esbenp.prettier-vscode # prettier code formatter
+                github.github-vscode-theme # github-theme
+                jnoortheen.nix-ide # nix language support
+                ms-python.python # python
               ];
 
               userSettings = {
-                # Nix formatting
-                "[nix]"."editor.defaultFormatter" = "jnoortheen.nix-ide";
+                # ── Theme (GitHub Dark / Light, auto-switch) ──
+                "window.autoDetectColorScheme" = true;
+                "workbench.preferredDarkColorTheme" = "GitHub Dark Default";
+                "workbench.preferredLightColorTheme" = "GitHub Light Default";
 
-                # Python import organization
-                "[python]"."editor.codeActionsOnSave"."source.organizeImports" = "explicit";
-
-                # AI features
-                "chat.agent.enabled" = true;
-
-                # Editor behavior
-                "editor.cursorSmoothCaretAnimation" = "on";
-                "editor.defaultFormatter" = "esbenp.prettier-vscode";
+                # ── Editor behavior ──
                 "editor.formatOnSave" = true;
                 "editor.tabSize" = 2;
-                "editor.wordWrap" = "on";
+                "editor.insertSpaces" = false; # hard tabs
 
-                # Git settings
-                "git.autofetch" = true;
-                "git.confirmSync" = false;
-                "git.enableCommitSigning" = true;
+                # ── Nix language (nil server via nix-ide) ──
+                "nix.enableLanguageServer" = true;
+                "nix.serverPath" = "nixd";
+                "nix.serverSettings".nil.formatting.command = [ "nixfmt" ];
 
-                # Disable VS Code auto-updates (managed by Nix)
-                "update.mode" = "none";
+                # ── Telemetry (all off) ──
+                "telemetry.telemetryLevel" = "off";
+                "workbench.enableExperiments" = false;
 
-                # UI customization
-                "workbench.activityBar.location" = "hidden";
-                "workbench.colorTheme" = "GitHub Dark Default";
+                # -- Harper (grammar checker) --
+                "harper.dialect" = "British";
               };
             };
           };
@@ -152,6 +129,9 @@ let
               # Right prompt: directory and time
               RPROMPT='%F{8}%2~/%f %D{%L:%M %p}'
               ZLE_RPROMPT_INDENT=0
+
+              # Initialize NPM global directory to path
+              export PATH="$HOME/.npm/bin:$PATH"
             '';
 
             # Oh My Zsh framework

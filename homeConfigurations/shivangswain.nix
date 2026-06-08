@@ -61,7 +61,7 @@ let
             enable = true;
 
             # Nix-managed extensions (immutable, mirrors old Zed approach)
-            # mutableExtensionsDir = false;
+            mutableExtensionsDir = false;
 
             profiles.default = {
               # Disable update/extension checks (Nix handles this)
@@ -69,15 +69,31 @@ let
               enableUpdateCheck = false;
 
               # Extensions (VSCode marketplace equivalents of Zed extensions)
-              extensions = with pkgs.vscode-extensions; [
-                anthropic.claude-code # claude-code
-                bradlc.vscode-tailwindcss # tailwindcss
-                # elijah-potter.harper # harper (grammar checker)
-                esbenp.prettier-vscode # prettier code formatter
-                github.github-vscode-theme # github-theme
-                jnoortheen.nix-ide # nix language support
-                ms-python.python # python
-              ];
+              extensions =
+                (with pkgs.vscode-extensions; [
+                  anthropic.claude-code # claude-code
+                  bierner.markdown-checkbox # markdown checkbox support
+                  bierner.markdown-emoji # markdown emoji support
+                  bierner.markdown-footnotes # markdown footnote support
+                  bierner.markdown-mermaid # markdown mermaid diagram support
+                  bierner.markdown-preview-github-styles # markdown preview with GitHub styles
+                  bradlc.vscode-tailwindcss # tailwindcss
+                  esbenp.prettier-vscode # prettier code formatter
+                  github.github-vscode-theme # github-theme
+                  jnoortheen.nix-ide # nix language support
+                  ms-python.python # python
+                  redhat.vscode-xml # xml language support
+                ])
+                ++ [
+                  # harper (grammar checker) — override the .vsix hash because
+                  # the marketplace re-published v2.3.0 after nixpkgs pinned it.
+                  (pkgs.vscode-extensions.elijah-potter.harper.overrideAttrs (oldAttrs: {
+                    src = pkgs.fetchurl {
+                      inherit (oldAttrs.src) url name;
+                      hash = "sha256-l4TiJ6Kxty10ltthUi/KQ2nEGjcoJNuv6osjoB7ZR5c=";
+                    };
+                  }))
+                ];
 
               userSettings = {
                 # ── Theme (GitHub Dark / Light, auto-switch) ──
@@ -85,15 +101,19 @@ let
                 "workbench.preferredDarkColorTheme" = "GitHub Dark Default";
                 "workbench.preferredLightColorTheme" = "GitHub Light Default";
 
-                # ── Editor behavior ──
+                # ── Editor behaviour ──
+                "editor.defaultFormatter" = "esbenp.prettier-vscode";
                 "editor.formatOnSave" = true;
                 "editor.tabSize" = 2;
                 "editor.insertSpaces" = false; # hard tabs
 
+                # ── Claude Code ──
+                "claudeCode.preferredLocation" = "panel";
+
                 # ── Nix language (nil server via nix-ide) ──
                 "nix.enableLanguageServer" = true;
                 "nix.serverPath" = "nixd";
-                "nix.serverSettings".nil.formatting.command = [ "nixfmt" ];
+                "nix.serverSettings".nixd.formatting.command = [ "nixfmt" ];
 
                 # ── Telemetry (all off) ──
                 "telemetry.telemetryLevel" = "off";
@@ -132,6 +152,9 @@ let
 
               # Initialize NPM global directory to path
               export PATH="$HOME/.npm/bin:$PATH"
+
+              # Add ~/.local/bin to path (used by Claude Code native install)
+              export PATH="$HOME/.local/bin:$PATH"
             '';
 
             # Oh My Zsh framework

@@ -114,6 +114,12 @@ let
           onActivation = {
             autoUpdate = true; # Update Homebrew itself
             cleanup = "zap"; # Remove all unmanaged casks/brews
+            extraEnv = {
+              "HOMEBREW_NO_ANALYTICS" = "1"; # Disable Homebrew analytics
+            };
+            extraFlags = [
+              "--force-cleanup" # Skip the interactive confirmation brew bundle now requires for cleanup
+            ];
             upgrade = true; # Upgrade outdated packages
           };
         };

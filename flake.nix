@@ -7,7 +7,7 @@
 
     # nix-darwin for macOS system configuration
     nix-darwin = {
-      url = "flake:nix-darwin";
+      url = "flake:nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

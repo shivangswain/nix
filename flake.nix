@@ -2,18 +2,18 @@
   description = "Nix configuration for macOS with nix-darwin and home-manager";
 
   inputs = {
-    # Main nixpkgs repository (unstable channel for latest packages)
-    nixpkgs.url = "flake:nixpkgs/nixpkgs-26.05-darwin";
+    # nixpkgs unstable channel for macOS
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     # nix-darwin for macOS system configuration
     nix-darwin = {
-      url = "flake:nix-darwin/nix-darwin-26.05";
+      url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # home-manager for user-level configuration
     home-manager = {
-      url = "flake:home-manager/release-26.05";
+      url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

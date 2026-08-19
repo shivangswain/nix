@@ -4,8 +4,6 @@
 let
   darwinModule =
     {
-      config,
-      lib,
       pkgs,
       ...
     }:
@@ -31,8 +29,14 @@ let
         environment.systemPackages = with pkgs; [
           android-tools # ADB and fastboot
           aria2 # Download utility
+          bat # Cat clone with syntax highlighting
+          black # Python code formatter
+          bootdev-cli # CLI to complete Boot.dev coding challenges & lessons
+          btop # Resource monitor
+          bun # Fast JavaScript runtime and package manager
           cargo # Rust package manager
-          claude-code # Claude code
+          delta # Diff viewer
+          eza # ls clone with extra features
           fd # Fast find alternative
           ffmpeg # Media processing
           fzf # Fuzzy finder
@@ -40,14 +44,21 @@ let
           gnupg # GPG encryption
           home-manager # User environment manager
           htop # Process viewer
+          lazygit # Terminal UI for git
           mkalias # Create macOS aliases from Nix store
           neovim # Text editor
           nixd # Nix language server
           nixfmt # Nix formatter
-          nodejs_24 # Node.js runtime
-          oh-my-posh # Prompt theme engine
+          nodejs-slim # Node.js runtime
+          oh-my-zsh # Zsh configuration framework
+          pi-coding-agent # Coding agent CLI
+          python3 # Python interpreter
+          rclone # Cloud storage sync
+          ripgrep # Fast recursive grep
+          rsync # File synchronization
           rustc # Rust compiler
-          typescript # TypeScript compiler
+          rustfmt # Rust formatter
+          tmux # Terminal multiplexer
           uv # Fast Python package manager
           zoxide # Smart cd command
           zsh # Z shell
@@ -60,66 +71,50 @@ let
         fonts.packages = with pkgs; [
           font-awesome
           inter
-          nerd-fonts.lilex
+          nerd-fonts.code-new-roman
         ];
 
         # Homebrew configuration for packages not in nixpkgs
         homebrew = {
           enable = true;
 
-          # CLI tools installed via Homebrew
-          brews = [
-            "mas" # Mac App Store CLI
-          ];
-
           # GUI applications installed via Homebrew Cask
           casks = [
-            "adobe-digital-editions"
-            "antigravity"
+            "brave-browser"
             "calibre"
             "citrix-workspace"
-            "claude"
             "discord"
-            "helium-browser"
+            "ghostty"
             "iina"
             "nvidia-geforce-now"
-            "obsidian"
-            "onyx"
+            # "onyx"
             "qbittorrent"
-            "sanesidebuttons"
-            "scroll-reverser"
-            "shottr"
-            "utm"
+            "signal"
             "visual-studio-code"
-            "zen"
-            "zoom"
+            "vorssaint"
           ];
 
-          # Always upgrade casks, even those with built-in auto-update mechanisms
+          # Always upgrade casks, even those with built-in auto update mechanisms
           greedyCasks = true;
 
           # Mac App Store applications (requires mas CLI)
           masApps = {
             "Bitwarden" = 1352778147;
-            "Hand Mirror" = 1502839586;
             "Hidden Bar" = 1452453066;
             "NordVPN" = 905953485;
+            "Remote Mouse" = 403195710;
             "SponsorBlock" = 1573461917;
             "uBlock Origin Lite" = 6745342698;
             "WhatsApp" = 310633997;
             "Windows App" = 1295203466;
           };
 
-          # Homebrew behavior on system activation
           onActivation = {
             autoUpdate = true; # Update Homebrew itself
-            cleanup = "zap"; # Remove all unmanaged casks/brews
+            cleanup = "zap"; # Remove old versions of packages
             extraEnv = {
               "HOMEBREW_NO_ANALYTICS" = "1"; # Disable Homebrew analytics
             };
-            extraFlags = [
-              "--force-cleanup" # Skip the interactive confirmation brew bundle now requires for cleanup
-            ];
             upgrade = true; # Upgrade outdated packages
           };
         };
@@ -136,7 +131,6 @@ let
         # Enable zsh as a system shell
         programs.zsh.enable = true;
 
-        # Security settings
         security.pam.services.sudo_local = {
           # Enable Touch ID for sudo authentication
           touchIdAuth = true;
@@ -156,7 +150,23 @@ let
               Sound = false;
             };
 
-            # Dock configuration
+            CustomSystemPreferences = {
+              "/Library/Preferences/com.brave.Browser.plist" = {
+                "BraveAIChatEnabled" = false;
+                "BraveAIEnabled" = false;
+                "BraveChatEnabled" = false;
+                "BraveLeoEnabled" = false;
+                "BraveNewsDisabled" = true;
+                "BraveRewardsDisabled" = true;
+                "BraveStatsPingEnabled" = false;
+                "BraveTalkDisabled" = true;
+                "BraveVPNDisabled" = true;
+                "BraveWalletDisabled" = true;
+                "CryptoWalletEnabled" = false;
+                "TorDisabled" = true;
+              };
+            };
+
             dock = {
               autohide = true;
               largesize = 80;
@@ -166,10 +176,9 @@ let
                 "/System/Cryptexes/App/System/Applications/Safari.app"
                 "/System/Applications/Mail.app"
                 "/System/Applications/Music.app"
-                "/System/Applications/Utilities/Terminal.app"
+                "/Applications/Ghostty.app"
                 "/Applications/Visual Studio Code.app"
                 "/Applications/WhatsApp.app"
-                "/Applications/Claude.app"
               ];
               persistent-others = [
                 "/Users/shivangswain/Downloads"
@@ -177,7 +186,6 @@ let
               show-recents = false;
             };
 
-            # Finder preferences
             finder = {
               FXRemoveOldTrashItems = true; # Auto-remove items after 30 days
               NewWindowTarget = "Home";
@@ -193,7 +201,7 @@ let
 
             # Global system preferences
             NSGlobalDomain = {
-              AppleInterfaceStyle = "Dark"; # Dark mode
+              AppleInterfaceStyle = "Dark";
             };
 
             # Software Update settings
@@ -202,7 +210,6 @@ let
             };
           };
 
-          # Keyboard remapping
           keyboard = {
             enableKeyMapping = true;
             remapCapsLockToEscape = true;
@@ -215,7 +222,6 @@ let
           stateVersion = 6;
         };
 
-        # User account configuration
         users.users.shivangswain = {
           home = "/Users/shivangswain";
           name = "shivangswain";

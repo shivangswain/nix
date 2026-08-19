@@ -6,8 +6,6 @@ let
   # Home-manager module defining user configuration
   homeModule =
     {
-      config,
-      lib,
       pkgs,
       ...
     }:
@@ -21,10 +19,55 @@ let
         };
 
         programs = {
+          ghostty = {
+            enable = true;
+            enableZshIntegration = true;
+            package = null;
+
+            settings = {
+              # Auto-switch theme with macOS appearance
+              theme = "light:GitHub,dark:GitHub Dark";
+
+              # Font settings
+              font-family = "CodeNewRoman Nerd Font";
+              font-size = 14;
+
+              # Window chrome
+              background-blur = "macos-glass-regular";
+              background-opacity = 0.90;
+              macos-option-as-alt = true;
+              macos-titlebar-style = "tabs";
+              window-padding-balance = true;
+              window-padding-x = 12;
+              window-padding-y = "6,12";
+              window-save-state = "always";
+
+              # Cursor: blinking line
+              cursor-style = "bar";
+              cursor-style-blink = true;
+
+              # Behaviour
+              clipboard-trim-trailing-spaces = true;
+              confirm-close-surface = false;
+              copy-on-select = "clipboard";
+              mouse-hide-while-typing = true;
+              scrollback-limit = 10485760; # 10 MiB
+              shell-integration = "zsh";
+              shell-integration-features = [
+                "cursor"
+                "sudo"
+                "title"
+                "ssh-env"
+                "ssh-terminfo"
+              ];
+            };
+          };
+
           # Git configuration with GPG signing
           git = {
             enable = true;
             settings = {
+              init.defaultBranch = "master";
               user = {
                 email = "me@shivangswain.com";
                 name = "shivangswain";
@@ -36,13 +79,11 @@ let
             };
           };
 
-          # GPG for encryption and signing
           gpg.enable = true;
 
-          # Neovim as default editor
           neovim = {
-            enable = true;
             defaultEditor = true;
+            enable = true;
             initLua = ''
               -- Use 2 spaces for indentation
               vim.opt.softtabstop = 2
@@ -50,82 +91,123 @@ let
             '';
           };
 
-          # Node package manager
           npm.enable = true;
+
+          pi-coding-agent = {
+            enable = true;
+            package = null;
+            settings = {
+              defaultProvider = "tokenrouter";
+              enableInstallTelemetry = false;
+              packages = [
+                "npm:@realvendex/pi-token-router"
+              ];
+              theme = "dark";
+            };
+          };
+
+          tmux = {
+            aggressiveResize = true; # Resize windows to the smallest client actually viewing them
+            baseIndex = 1; # Windows/panes start at 1 (matches keyboard row order)
+            enable = true;
+            escapeTime = 0; # No delay after pressing Escape (matters for Vim/Neovim)
+            historyLimit = 50000; # Larger scroll back buffer
+            keyMode = "vi"; # Vi-style key bindings in copy mode
+            mouse = true; # Mouse support for pane/window selection and scrolling
+            prefix = "C-a"; # C-a is easier to reach than the default C-b
+            terminal = "tmux-256color"; # 256-colour terminal with true-colour pass through
+          };
 
           # Python package manager
           uv.enable = true;
 
-          # VSCode
           vscode = {
             enable = true;
+            package = null;
 
-            # Nix-managed extensions (immutable, mirrors old Zed approach)
+            # Immutable extension directory managed by Nix
             mutableExtensionsDir = false;
 
             profiles.default = {
-              # Disable update/extension checks (Nix handles this)
+              # Disable update/extension checks
               enableExtensionUpdateCheck = false;
               enableUpdateCheck = false;
 
-              # Extensions (VSCode marketplace equivalents of Zed extensions)
-              extensions =
-                (with pkgs.vscode-extensions; [
-                  anthropic.claude-code # claude-code
-                  bierner.markdown-checkbox # markdown checkbox support
-                  bierner.markdown-emoji # markdown emoji support
-                  bierner.markdown-footnotes # markdown footnote support
-                  bierner.markdown-mermaid # markdown mermaid diagram support
-                  bierner.markdown-preview-github-styles # markdown preview with GitHub styles
-                  bradlc.vscode-tailwindcss # tailwindcss
+              # Extensions
+              extensions = (
+                with pkgs.vscode-extensions;
+                [
+                  bierner.markdown-checkbox # Markdown checkbox support
+                  bierner.markdown-emoji # Markdown emoji support
+                  bierner.markdown-footnotes # Markdown footnote support
+                  bierner.markdown-mermaid # Markdown mermaid diagram support
+                  bierner.markdown-preview-github-styles # Markdown preview with GitHub styles
+                  bradlc.vscode-tailwindcss
+                  elijah-potter.harper # grammar checker
                   esbenp.prettier-vscode # prettier code formatter
-                  github.github-vscode-theme # github-theme
+                  github.github-vscode-theme
                   jnoortheen.nix-ide # nix language support
-                  ms-python.python # python
-                  redhat.vscode-xml # xml language support
-                ])
-                ++ [
-                  # harper (grammar checker) — override the .vsix hash because
-                  # the marketplace re-published v2.3.0 after nixpkgs pinned it.
-                  (pkgs.vscode-extensions.elijah-potter.harper.overrideAttrs (oldAttrs: {
-                    src = pkgs.fetchurl {
-                      inherit (oldAttrs.src) url name;
-                      hash = "sha256-l4TiJ6Kxty10ltthUi/KQ2nEGjcoJNuv6osjoB7ZR5c=";
-                    };
-                  }))
-                ];
+                  ms-python.black-formatter # black code formatter for Python
+                  ms-python.isort # import sorting for Python
+                  ms-python.python
+                  ms-python.vscode-pylance # Python language server
+                  redhat.vscode-xml # XML language support
+                ]
+              );
 
               userSettings = {
-                # ── Theme (GitHub Dark / Light, auto-switch) ──
+                # Theme (GitHub Dark / Light, auto-switch)
                 "window.autoDetectColorScheme" = true;
                 "workbench.preferredDarkColorTheme" = "GitHub Dark Default";
                 "workbench.preferredLightColorTheme" = "GitHub Light Default";
 
-                # ── Editor behaviour ──
+                # Editor behaviour
+                "editor.cursorBlinking" = "smooth";
+                "editor.cursorSmoothCaretAnimation" = "on";
                 "editor.defaultFormatter" = "esbenp.prettier-vscode";
+                "editor.fontFamily" = "CodeNewRoman Nerd Font, Menlo, Monaco, 'Courier New', monospace";
+                "editor.fontSize" = 14;
                 "editor.formatOnSave" = true;
-                "editor.tabSize" = 2;
                 "editor.insertSpaces" = false; # hard tabs
+                "editor.smoothScrolling" = true;
+                "editor.tabSize" = 2;
+                "workbench.list.smoothScrolling" = true;
 
-                # ── Claude Code ──
-                "claudeCode.preferredLocation" = "panel";
+                # Terminal settings
+                "terminal.external.osxExec" = "Ghostty.app";
+                "terminal.integrated.cursorBlinking" = true;
+                "terminal.integrated.cursorStyle" = "line";
+                "terminal.integrated.cursorStyleInactive" = "line";
+                "terminal.integrated.smoothScrolling" = true;
 
-                # ── Nix language (nil server via nix-ide) ──
+                # Language-specific formatters
+                "[nix]"."editor.defaultFormatter" = "jnoortheen.nix-ide";
+                "[python]"."editor.defaultFormatter" = "ms-python.black-formatter";
+                "[xml]"."editor.defaultFormatter" = "redhat.vscode-xml";
+
+                # Nix language
                 "nix.enableLanguageServer" = true;
                 "nix.serverPath" = "nixd";
                 "nix.serverSettings".nixd.formatting.command = [ "nixfmt" ];
 
-                # ── Telemetry (all off) ──
+                # Python language
+                "python.analysis.typeCheckingMode" = "standard";
+                "isort.args" = [
+                  "--profile"
+                  "black"
+                ];
+
+                # Telemetry (all off)
+                "telemetry.feedback.enabled" = false;
                 "telemetry.telemetryLevel" = "off";
                 "workbench.enableExperiments" = false;
 
-                # -- Harper (grammar checker) --
+                # Harper (grammar checker)
                 "harper.dialect" = "British";
               };
             };
           };
 
-          # Zsh shell configuration
           zsh = {
             enable = true;
             enableCompletion = true;
@@ -133,7 +215,6 @@ let
             autosuggestion.enable = true;
             syntaxHighlighting.enable = true;
 
-            # Shell initialization script
             initContent = ''
               # Initialize Homebrew on Apple Silicon
               if [[ $(uname -m) == 'arm64' ]]; then
@@ -157,19 +238,20 @@ let
               export PATH="$HOME/.local/bin:$PATH"
             '';
 
-            # Oh My Zsh framework
             oh-my-zsh = {
               enable = true;
               plugins = [
                 "cp" # Progress bar for cp
+                "eza" # ls replacement with extra features
                 "fzf" # Fuzzy finder integration
+                "macos" # macOS-specific integrations
+                "tmux" # tmux integration
                 "zoxide" # Smart directory navigation
               ];
             };
           };
         };
 
-        # Background services
         services = {
           # GPG agent for key management and SSH authentication
           gpg-agent = {

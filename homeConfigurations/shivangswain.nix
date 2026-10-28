@@ -93,19 +93,6 @@ let
 
           npm.enable = true;
 
-          pi-coding-agent = {
-            enable = true;
-            package = null;
-            settings = {
-              defaultProvider = "tokenrouter";
-              enableInstallTelemetry = false;
-              packages = [
-                "npm:@realvendex/pi-token-router"
-              ];
-              theme = "dark";
-            };
-          };
-
           tmux = {
             aggressiveResize = true; # Resize windows to the smallest client actually viewing them
             baseIndex = 1; # Windows/panes start at 1 (matches keyboard row order)
@@ -137,6 +124,8 @@ let
               extensions = (
                 with pkgs.vscode-extensions;
                 [
+                  anthropic.claude-code
+                  astro-build.astro-vscode
                   bierner.markdown-checkbox # Markdown checkbox support
                   bierner.markdown-emoji # Markdown emoji support
                   bierner.markdown-footnotes # Markdown footnote support
@@ -172,6 +161,7 @@ let
                 "editor.smoothScrolling" = true;
                 "editor.tabSize" = 2;
                 "workbench.list.smoothScrolling" = true;
+                "update.showReleaseNotes" = false;
 
                 # Terminal settings
                 "terminal.external.osxExec" = "Ghostty.app";
@@ -203,7 +193,7 @@ let
                 "workbench.enableExperiments" = false;
 
                 # Harper (grammar checker)
-                "harper.dialect" = "British";
+                "harper.dialect" = "Indian";
               };
             };
           };

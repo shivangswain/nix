@@ -33,32 +33,27 @@ let
           black # Python code formatter
           bootdev-cli # CLI to complete Boot.dev coding challenges & lessons
           btop # Resource monitor
-          bun # Fast JavaScript runtime and package manager
-          cargo # Rust package manager
           delta # Diff viewer
-          eza # ls clone with extra features
           fd # Fast find alternative
+          eza # ls clone with extra features
           ffmpeg # Media processing
           fzf # Fuzzy finder
           git # Version control
           gnupg # GPG encryption
           home-manager # User environment manager
           htop # Process viewer
+          jdk21 # Java Development Kit (Android builds)
           lazygit # Terminal UI for git
-          mkalias # Create macOS aliases from Nix store
+          mole-cleaner # CLI to clean up macOS
           neovim # Text editor
           nixd # Nix language server
           nixfmt # Nix formatter
           nodejs-slim # Node.js runtime
           oh-my-zsh # Zsh configuration framework
-          pi-coding-agent # Coding agent CLI
           python3 # Python interpreter
-          rclone # Cloud storage sync
           ripgrep # Fast recursive grep
-          rsync # File synchronization
-          rustc # Rust compiler
-          rustfmt # Rust formatter
           tmux # Terminal multiplexer
+          transmission_4 # BitTorrent client CLI
           uv # Fast Python package manager
           zoxide # Smart cd command
           zsh # Z shell
@@ -80,16 +75,27 @@ let
 
           # GUI applications installed via Homebrew Cask
           casks = [
+            "altserver"
+            "android-studio"
             "brave-browser"
             "calibre"
             "citrix-workspace"
+            "claude"
+            "claude-code"
+            "clop"
             "discord"
             "ghostty"
             "iina"
-            "nvidia-geforce-now"
-            # "onyx"
-            "qbittorrent"
+            "jdownloader"
+            "macpacker"
+            "microsoft-excel"
+            "microsoft-powerpoint"
+            "microsoft-word"
+            "onyx"
+            "parsec"
             "signal"
+            "tailscale-app"
+            "transmission"
             "visual-studio-code"
             "vorssaint"
           ];
@@ -101,12 +107,12 @@ let
           masApps = {
             "Bitwarden" = 1352778147;
             "Hidden Bar" = 1452453066;
-            "NordVPN" = 905953485;
-            "Remote Mouse" = 403195710;
             "SponsorBlock" = 1573461917;
+            "Telegram" = 747648890;
             "uBlock Origin Lite" = 6745342698;
             "WhatsApp" = 310633997;
             "Windows App" = 1295203466;
+            "Xcode" = 497799835;
           };
 
           onActivation = {
@@ -166,6 +172,22 @@ let
                 "TorDisabled" = true;
               };
             };
+
+            # Disable Microsoft Office telemetry
+            CustomUserPreferences = builtins.listToAttrs (
+              map
+                (domain: {
+                  name = domain;
+                  value.SendAllTelemetryEnabled = false;
+                })
+                [
+                  "com.microsoft.autoupdate2"
+                  "com.microsoft.Excel"
+                  "com.microsoft.Office365ServiceV2"
+                  "com.microsoft.Powerpoint"
+                  "com.microsoft.Word"
+                ]
+            );
 
             dock = {
               autohide = true;
